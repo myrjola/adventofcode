@@ -1,12 +1,35 @@
-from statistics import mode
+from statistics import multimode
+import collections
 
 lines = [line.strip() for line in open("input.txt", 'r').readlines()]
 
-bit_columns = zip(*lines)
+filtered_lines = lines
+bit_columns = list(zip(*filtered_lines))
 
-most_common_bits = [mode(bits) for bits in bit_columns]
+for i in range(len(bit_columns)):
+    column = bit_columns[i]
+    most_common_bit = max(multimode(column))
+    filtered_lines = [line for line in filtered_lines if line[i] == most_common_bit]
+    bit_columns = list(zip(*filtered_lines))
+    if (len(filtered_lines) == 1):
+        break
 
-most_common_bits_int = int(''.join(most_common_bits), 2)
-least_common_bits_int = ~most_common_bits_int & 0xFFF
+oxygen_generator_rating = int(''.join(filtered_lines[0]), 2)
 
-print(most_common_bits_int*least_common_bits_int)
+filtered_lines = lines
+bit_columns = list(zip(*filtered_lines))
+
+for i in range(len(bit_columns)):
+    column = bit_columns[i]
+    stats = collections.Counter(column).most_common()
+    least_common = stats[-1][0]
+    if (stats[0][0] == [1][0]):
+        least_common = '0'
+
+    filtered_lines = [line for line in filtered_lines if line[i] == least_common]
+    if (len(filtered_lines) == 1):
+        break
+
+co2_scrubber_rating = int(''.join(filtered_lines[0]), 2)
+
+print(oxygen_generator_rating*co2_scrubber_rating)
