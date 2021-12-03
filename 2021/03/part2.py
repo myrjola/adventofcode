@@ -1,5 +1,4 @@
 from statistics import multimode
-import collections
 
 lines = [line.strip() for line in open("input.txt", 'r').readlines()]
 
@@ -21,12 +20,14 @@ bit_columns = list(zip(*filtered_lines))
 
 for i in range(len(bit_columns)):
     column = bit_columns[i]
-    stats = collections.Counter(column).most_common()
-    least_common = stats[-1][0]
-    if (stats[0][0] == [1][0]):
-        least_common = '0'
 
+    ones = sum([int(x) for x in column])
+    half = float(len(column)) / 2
+    least_common = "0" if ones >= half else '1'
+
+    print(least_common)
     filtered_lines = [line for line in filtered_lines if line[i] == least_common]
+    bit_columns = list(zip(*filtered_lines))
     if (len(filtered_lines) == 1):
         break
 
